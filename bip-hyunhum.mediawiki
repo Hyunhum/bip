@@ -1,0 +1,43 @@
+<pre>
+  BIP: 
+
+  Layer: Applications
+
+  Title: increase iteration counts for pbkdf2 implemented in bip39
+
+  Author: Hyunhum Cho <hyeonheum@naver.com>
+
+  Status: Draft
+
+  Type: Standards Track
+
+  Created: 2022-10-25
+</pre>
+==Abstract==
+This BIP describes the implementation of advanced security for deterministic wallet seed, 
+by increasing rounds used in pbkdf2 from 2,048 of BIP39, to 100,000+.
+==Motivation==
+Current BIP39 implements pbkdf2 with iteration count of 2,048,
+Following Moore's law, With current iteration count, option for passphrase is nearly useless for protection.
+==Passphrase for mnemonic to seed conversion==
+in BIP39 metawiki, it describes usage of passphrase like,
+   - A user may decide to protect their mnemonic with a passphrase.
+   - To create a binary seed from the mnemonic, we use the PBKDF2 function with a mnemonic sentence (in UTF-8 NFKD)
+     used as the password and the string "mnemonic" + passphrase (againin UTF-8 NFKD) used as the salt.
+     The iteration count is set to 2048 and HMAC-SHA512 is used as the pseudo-random function.
+The concern arises here,
+
+pbkdf2 with 2,048 iteration can be easily broken unless passphrase is extremely secure, 
+becaues it can be executed more than thousands times per second with modern hardware, make it easy to brute-force attack.
+
+It means that pbkdf2 with current standard functions nearly just to fit the byte size suitable for generation of deterministic wallet using BIP32.
+
+So, if "protection" does matter, it's time to consider increasing iterations used in BIP39.
+
+Appropriate iteration counts would be at least 100,000 so that attacker cannot generate more than 100 hash per second.
+
+OWASP recommends 120,000 iteration counts for PBKDF2-HMAC-SHA512(which BIP39 implements).
+==Test vectors==
+TBD
+==Reference implementation==
+TBD
